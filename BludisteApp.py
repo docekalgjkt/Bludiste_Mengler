@@ -36,6 +36,6 @@ class BludisteApp:
 
 
 if __name__ == "__main__":
-    dao = MazeDAOXML("maze.xml")  # Načítáme bludiště z XML
+    dao = MazeDAOXML("maze1.xml")  # Načítáme bludiště z XML
     app = BludisteApp(dao)
     app.spustit()

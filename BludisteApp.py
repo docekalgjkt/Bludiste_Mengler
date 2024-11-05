@@ -1,40 +1,41 @@
 # BludisteApp.py
 
 from tkinter import Tk, Canvas
-from typing import List
-from Bludiste import Bludiste
+from MazeDAOXML import MazeDAOXML  # Použití XML DAO
 from BludisteView import BludisteView
 
 class BludisteApp:
-    def __init__(self, bludiste_data: List[List[int]], rozmerPolicka: int = 20):
+    def __init__(self, dao):
         self.root = Tk()
-        self.canvas = Canvas(self.root, width=800, height=800)
-        self.canvas.pack()
+        self.canvas = Canvas(self.root)
+        self.canvas.pack(fill="both", expand=True)  # Nastaví plné roztáhnutí na okno
 
-        self.bludiste = Bludiste(bludiste_data)
-        self.bludisteView = BludisteView(self.bludiste, rozmerPolicka)
+        # Načteme bludiště pomocí DAO
+        self.bludiste = dao.load_maze()
+        self.bludisteView = BludisteView(self.bludiste)
         self.bludisteView.setCanvas(self.canvas)
 
-    def spustit(self):
+        # Posluchač události pro změnu velikosti okna
+        self.canvas.bind("<Configure>", self.update_view)
+
+    def update_view(self, event):
+        # Získáme aktuální rozměry okna
+        window_width = event.width
+        window_height = event.height
+
+        # Vypočítáme rozměr políčka podle velikosti okna a rozměrů bludiště
+        sirka, vyska = self.bludiste.getRozmery()
+        rozmerPolicka = min(window_width // sirka, window_height // vyska)
+
+        # Aktualizujeme rozměr políčka a překreslíme bludiště
+        self.bludisteView.rozmerPolicka = rozmerPolicka
         self.bludisteView.vykresli()
+
+    def spustit(self):
         self.root.mainloop()
 
 
-# Data pro složitější bludiště: 1 = zeď, 0 = volno, 2 = cíl, 3 = start
 if __name__ == "__main__":
-    bludiste_data = [
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-        [1, 3, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 2, 1],
-        [1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1],
-        [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1],
-        [1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1],
-        [1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1],
-        [1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1],
-        [1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1],
-        [1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1],
-        [1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1],
-        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-    ]
-
-    app = BludisteApp(bludiste_data, rozmerPolicka=50)
+    dao = MazeDAOXML("maze.xml")  # Načítáme bludiště z XML
+    app = BludisteApp(dao)
     app.spustit()

@@ -17,8 +17,15 @@ class BludisteView:
             print("Canvas není nastaven.")
             return
 
-        for y in range(self.bludiste.getVyska()):
-            for x in range(self.bludiste.getSirka()):
+        # Smazání všech objektů na plátně před novým vykreslením
+        self.canvas.delete("all")
+
+        # Získání rozměrů bludiště
+        sirka, vyska = self.bludiste.getRozmery()
+
+        # Vykreslí bludiště podle aktuální velikosti políčka
+        for y in range(vyska):
+            for x in range(sirka):
                 barva = "white"
                 if self.bludiste.bludiste[y][x] == 1:
                     barva = "black"  # Zeď

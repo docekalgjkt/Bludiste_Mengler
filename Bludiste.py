@@ -1,27 +1,41 @@
+# Bludiste.py
+
 from typing import List, Tuple
 
-# Třída pro bludiště
 class Bludiste:
     def __init__(self, bludiste: List[List[int]]):
+        # 1 = zeď, 0 = volné pole, 2 = východ, 3 = start
         self.bludiste = bludiste
+        self.start = self.najdiStart()
+        self.cil = self.najdiCil()
 
-    # Zkontroluje, zda je na daných souřadnicích volné místo (0 je volno, 1 je stěna)
     def jeVolno(self, souradnice: Tuple[int, int]) -> bool:
         x, y = souradnice
-        return self.bludiste[y][x] == 0
+        return self.bludiste[y][x] == 0 or self.bludiste[y][x] == 3  # Start je také volný
 
-    # Vrátí šířku bludiště
     def getSirka(self) -> int:
         return len(self.bludiste[0])
 
-    # Vrátí výšku bludiště
     def getVyska(self) -> int:
         return len(self.bludiste)
 
-    # Vrátí rozměry bludiště jako tuple (šířka, výška)
     def getRozmery(self) -> Tuple[int, int]:
-        return (self.getSirka(), self.getVyska())
+        return self.getSirka(), self.getVyska()
 
-    # Zkontroluje, zda jsou souřadnice východem (poslední bod bludiště)
     def jeVychod(self, souradnice: Tuple[int, int]) -> bool:
-        return souradnice == (self.getSirka() - 1, self.getVyska() - 1)
+        x, y = souradnice
+        return self.bludiste[y][x] == 2
+
+    def najdiStart(self) -> Tuple[int, int]:
+        for y, radek in enumerate(self.bludiste):
+            for x, hodnota in enumerate(radek):
+                if hodnota == 3:  # 3 je start
+                    return (x, y)
+        raise ValueError("Start není definován v bludišti.")
+
+    def najdiCil(self) -> Tuple[int, int]:
+        for y, radek in enumerate(self.bludiste):
+            for x, hodnota in enumerate(radek):
+                if hodnota == 2:  # 2 je cíl
+                    return (x, y)
+        raise ValueError("Cíl není definován v bludišti.")

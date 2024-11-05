@@ -1,29 +1,40 @@
-import tkinter as tk
+# BludisteApp.py
+
+from tkinter import Tk, Canvas
+from typing import List
 from Bludiste import Bludiste
 from BludisteView import BludisteView
+
 class BludisteApp:
-    def __init__(self, root: tk.Tk, bludiste: Bludiste, rozmerPolicka: int):
-        self.root = root
-        self.canvas = tk.Canvas(root, width=bludiste.getSirka() * rozmerPolicka,
-                                height=bludiste.getVyska() * rozmerPolicka)
+    def __init__(self, bludiste_data: List[List[int]], rozmerPolicka: int = 20):
+        self.root = Tk()
+        self.canvas = Canvas(self.root, width=800, height=800)
         self.canvas.pack()
 
-        # Vytvoří objekt BludisteView a vykreslí ho na plátno
-        self.bludisteView = BludisteView(bludiste, rozmerPolicka)
+        self.bludiste = Bludiste(bludiste_data)
+        self.bludisteView = BludisteView(self.bludiste, rozmerPolicka)
         self.bludisteView.setCanvas(self.canvas)
-        self.bludisteView.vykresli(self.canvas)
 
-# Příklad bludiště: 0 = volná cesta, 1 = stěna
-bludiste_data = [
-    [0, 1, 0, 0, 0],
-    [0, 1, 1, 1, 0],
-    [0, 0, 0, 1, 0],
-    [1, 1, 0, 1, 1],
-    [0, 0, 0, 0, 0]
-]
+    def spustit(self):
+        self.bludisteView.vykresli()
+        self.root.mainloop()
 
-# Inicializace a spuštění aplikace
-root = tk.Tk()
-bludiste = Bludiste(bludiste_data)
-app = BludisteApp(root, bludiste, 40)
-root.mainloop()
+
+# Data pro složitější bludiště: 1 = zeď, 0 = volno, 2 = cíl, 3 = start
+if __name__ == "__main__":
+    bludiste_data = [
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+        [1, 3, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 2, 1],
+        [1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 1, 1],
+        [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1],
+        [1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1],
+        [1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+        [1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1],
+        [1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1],
+        [1, 0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 0, 1],
+        [1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+        [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    ]
+
+    app = BludisteApp(bludiste_data, rozmerPolicka=50)
+    app.spustit()

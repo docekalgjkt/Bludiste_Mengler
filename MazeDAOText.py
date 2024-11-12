@@ -1,5 +1,3 @@
-# MazeDAOText.py
-
 from typing import List
 from Bludiste import Bludiste
 

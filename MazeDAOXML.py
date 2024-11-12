@@ -1,5 +1,3 @@
-# MazeDAOXML.py
-
 import xml.etree.ElementTree as ET
 from typing import List
 from Bludiste import Bludiste

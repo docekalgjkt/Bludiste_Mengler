@@ -1,5 +1,3 @@
-# BludisteView.py
-
 from tkinter import Canvas
 from Bludiste import Bludiste
 
@@ -17,13 +15,10 @@ class BludisteView:
             print("Canvas není nastaven.")
             return
 
-        # Smazání všech objektů na plátně před novým vykreslením
         self.canvas.delete("all")
 
-        # Získání rozměrů bludiště
         sirka, vyska = self.bludiste.getRozmery()
 
-        # Vykreslí bludiště podle aktuální velikosti políčka
         for y in range(vyska):
             for x in range(sirka):
                 barva = "white"

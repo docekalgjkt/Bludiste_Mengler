@@ -1,5 +1,3 @@
-# Bludiste.py
-
 from typing import List, Tuple
 
 class Bludiste:
@@ -29,13 +27,13 @@ class Bludiste:
     def najdiStart(self) -> Tuple[int, int]:
         for y, radek in enumerate(self.bludiste):
             for x, hodnota in enumerate(radek):
-                if hodnota == 3:  # 3 je start
+                if hodnota == 3:
                     return (x, y)
         raise ValueError("Start není definován v bludišti.")
 
     def najdiCil(self) -> Tuple[int, int]:
         for y, radek in enumerate(self.bludiste):
             for x, hodnota in enumerate(radek):
-                if hodnota == 2:  # 2 je cíl
+                if hodnota == 2:
                     return (x, y)
         raise ValueError("Cíl není definován v bludišti.")

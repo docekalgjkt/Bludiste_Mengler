@@ -1,5 +1,3 @@
-# BludisteView.py
-
 from tkinter import Canvas
 from Bludiste import Bludiste
 
@@ -17,8 +15,12 @@ class BludisteView:
             print("Canvas není nastaven.")
             return
 
-        for y in range(self.bludiste.getVyska()):
-            for x in range(self.bludiste.getSirka()):
+        self.canvas.delete("all")
+
+        sirka, vyska = self.bludiste.getRozmery()
+
+        for y in range(vyska):
+            for x in range(sirka):
                 barva = "white"
                 if self.bludiste.bludiste[y][x] == 1:
                     barva = "black"  # Zeď

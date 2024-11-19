@@ -1,9 +1,12 @@
 from typing import List, Tuple
 
+
 class Bludiste:
     def __init__(self, bludiste: List[List[int]]):
         # 1 = zeď, 0 = volné pole, 2 = východ, 3 = start
         self.bludiste = bludiste
+
+        # Validace bludiště
         self.start = self.najdiStart()
         self.cil = self.najdiCil()
 

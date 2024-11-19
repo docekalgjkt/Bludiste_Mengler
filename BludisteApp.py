@@ -36,6 +36,6 @@ class BludisteApp:
         self.root.mainloop()
 
 if __name__ == "__main__":
-    dao = MazeDAO("maze.xml")
+    dao = MazeDAO("maze.csv")
     app = BludisteApp(dao)
     app.spustit()

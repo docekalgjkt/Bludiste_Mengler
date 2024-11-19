@@ -7,13 +7,11 @@ class MazeDAO:
         self.soubor = soubor
 
     def load_maze(self) -> Bludiste:
-        # Načtení bludiště v požadovaném formátu (txt, xml, csv)
         maze_data = self.nacti_soubor()
-        print("Načtené bludiště:", maze_data)  # Testovací výpis pro ladění
+        print("Načtené bludiště:", maze_data)
         return Bludiste(maze_data)
 
     def nacti_soubor(self) -> List[List[int]]:
-        # Kód pro načtení souboru a vytvoření seznamu seznamů (2D matice)
         if self.soubor.endswith('.txt'):
             return self._load_txt_maze()
         elif self.soubor.endswith('.csv'):
@@ -38,7 +36,6 @@ class MazeDAO:
         tree = ET.parse(self.soubor)
         root = tree.getroot()
 
-        # Ověření správnosti formátu XML
         maze = []
         for row in root.findall('row'):
             try:

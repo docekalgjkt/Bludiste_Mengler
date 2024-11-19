@@ -6,13 +6,12 @@ class Bludiste:
         # 1 = zeď, 0 = volné pole, 2 = východ, 3 = start
         self.bludiste = bludiste
 
-        # Validace bludiště
         self.start = self.najdiStart()
         self.cil = self.najdiCil()
 
     def jeVolno(self, souradnice: Tuple[int, int]) -> bool:
         x, y = souradnice
-        return self.bludiste[y][x] == 0 or self.bludiste[y][x] == 3  # Start je také volný
+        return self.bludiste[y][x] == 0 or self.bludiste[y][x] == 3
 
     def getSirka(self) -> int:
         return len(self.bludiste[0])

@@ -1,17 +1,17 @@
 from Bludiste import Bludiste
 from typing import List
 
+
 class MazeDAO:
     def __init__(self, soubor: str):
         self.soubor = soubor
 
     def load_maze(self) -> Bludiste:
-        # Načtení bludiště v požadovaném formátu (txt, xml, csv)
         maze_data = self.nacti_soubor()
+        print("Načtené bludiště:", maze_data)
         return Bludiste(maze_data)
 
     def nacti_soubor(self) -> List[List[int]]:
-        # Kód pro načtení souboru a vytvoření seznamu seznamů (2D matice)
         if self.soubor.endswith('.txt'):
             return self._load_txt_maze()
         elif self.soubor.endswith('.csv'):
@@ -35,4 +35,15 @@ class MazeDAO:
         import xml.etree.ElementTree as ET
         tree = ET.parse(self.soubor)
         root = tree.getroot()
-        return [[int(cell.text) for cell in row] for row in root.findall('row')]
+
+        maze = []
+        for row in root.findall('row'):
+            try:
+                maze.append([int(cell) for cell in row.text.split()])
+            except ValueError:
+                raise ValueError("Chybný formát XML: řádky musí obsahovat pouze čísla oddělená mezerami.")
+
+        if not maze:
+            raise ValueError("Bludiště z XML je prázdné.")
+
+        return maze

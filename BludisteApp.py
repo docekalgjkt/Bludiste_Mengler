@@ -1,7 +1,8 @@
 from tkinter import Tk, Canvas, filedialog, messagebox
 from MazeDAO import MazeDAO
 from BludisteView import BludisteView
-
+from Robot import Robot
+from RobotView import RobotView
 
 class BludisteApp:
     def __init__(self):
@@ -11,6 +12,8 @@ class BludisteApp:
 
         self.bludiste = None
         self.bludisteView = None
+        self.robot = None
+        self.robotView = None
 
         self.vyber_a_nacti_bludiste()  # Načteme bludiště při spuštění
 
@@ -35,6 +38,10 @@ class BludisteApp:
             self.bludisteView = BludisteView(self.bludiste)
             self.bludisteView.setCanvas(self.canvas)
 
+            # Vytvoření robota a jeho vizualizace
+            self.robot = Robot(self.bludiste)
+            self.robotView = RobotView(self.robot)
+
             # Překreslí okno s novým bludištěm
             self.update_view()
 
@@ -55,10 +62,28 @@ class BludisteApp:
         self.bludisteView.rozmerPolicka = rozmerPolicka
         self.bludisteView.vykresli()
 
+        # Vykreslení robota
+        if self.robot and self.robotView:
+            self.robotView.vykresli(self.canvas, self.bludisteView.rozmerPolicka)
+
+    def pohniRobotem(self):
+        """
+        Posune robota o jeden krok a překreslí okno.
+        """
+        if self.robot.pohniSe():
+            self.update_view()
+        else:
+            messagebox.showinfo("Informace", "Robot dosáhl cíle nebo není možné pokračovat.")
+
     def spustit(self):
-        if self.bludiste:  # Spustí hlavní smyčku jen pokud bylo bludiště načteno
+        if self.bludiste:
+            self.root.after(100, self.automatickyPohyb)  # Automatický pohyb robota (volitelné)
             self.root.mainloop()
 
+    def automatickyPohyb(self):
+        if self.robot and self.robot.pohniSe():
+            self.update_view()
+            self.root.after(100, self.automatickyPohyb)
 
 if __name__ == "__main__":
     app = BludisteApp()

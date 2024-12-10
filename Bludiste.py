@@ -11,7 +11,8 @@ class Bludiste:
 
     def jeVolno(self, souradnice: Tuple[int, int]) -> bool:
         x, y = souradnice
-        return self.bludiste[y][x] == 0 or self.bludiste[y][x] == 3
+        # Povolit pohyb na volné pole (0) nebo startovní (3) a vstup na cíl (2)
+        return self.bludiste[y][x] == 0 or self.bludiste[y][x] == 3 or self.bludiste[y][x] == 2
 
     def getSirka(self) -> int:
         return len(self.bludiste[0])

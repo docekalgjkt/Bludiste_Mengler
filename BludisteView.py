@@ -9,6 +9,18 @@ class BludisteView:
 
     def setCanvas(self, canvas: Canvas):
         self.canvas = canvas
+        self._update_canvas_size()
+
+    def _update_canvas_size(self):
+        """
+        Nastaví velikost canvasu na základě velikosti bludiště.
+        """
+        sirka, vyska = self.bludiste.getRozmery()
+        if self.canvas is not None:
+            self.canvas.config(
+                width=sirka * self.rozmerPolicka,
+                height=vyska * self.rozmerPolicka
+            )
 
     def vykresli(self):
         if self.canvas is None:

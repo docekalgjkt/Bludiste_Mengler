@@ -1,6 +1,6 @@
 from typing import Tuple, List
 from Bludiste import Bludiste
-
+from collections import deque
 
 class Robot:
     def __init__(self, bludiste: Bludiste):
@@ -10,38 +10,68 @@ class Robot:
 
     def jePlatnyTah(self, souradnice: Tuple[int, int]) -> bool:
         x, y = souradnice
+        # Zkontrolujte, zda souřadnice spadají do platného rozsahu pomocí metod z Bludiste
         if 0 <= x < self.bludiste.getSirka() and 0 <= y < self.bludiste.getVyska():
-            return self.bludiste.jeVolno((x, y))
+            # Zkontrolujte hodnotu bludiště na dané pozici
+            return self.bludiste.bludiste[y][x] == 0 or self.bludiste.bludiste[y][x] == 3
         return False
 
     def najdiCestu(self):
-        def dfs(pozice):
-            if pozice in self.cesta:
-                return False
+        start = self.bludiste.start
+        cil = self.bludiste.cil
 
-            self.cesta.append(pozice)
+        if hasattr(self, 'cesta') and self.cesta:
+            return self.cesta
 
-            if self.bludiste.jeVychod(pozice):
-                return True
+        queue = [(start, [])]  # (pozice, aktuální cesta)
+        visited = set()  # Záznam navštívených pozic
 
-            x, y = pozice
-            for dx, dy in [(0, 1), (1, 0), (0, -1), (-1, 0)]:
-                nova_pozice = (x + dx, y + dy)
-                if self.jePlatnyTah(nova_pozice):
-                    if dfs(nova_pozice):
-                        return True
+        while queue:
+            current_position, path = queue.pop(0)  # BFS - pop z fronty
 
-            self.cesta.pop()
-            return False
+            print(f"Procházím pozici: {current_position}, cesta: {path}")
 
-        dfs(self.pozice)
+            if current_position == cil:
+                self.cesta = path + [current_position]
+                print(f"Cesta byla nalezena: {self.cesta}")
+                return self.cesta
 
-    def pohniSe(self) -> bool:
-        if not self.cesta:
-            self.najdiCestu()
+            visited.add(current_position)
 
-        if self.cesta:
-            self.pozice = self.cesta.pop(0)
-            return True
+            for next_position in self.getSousedniPozice(current_position):
+                if next_position not in visited and self.bludiste.jeVolno(next_position):
+                    print(f"Přidávám pozici {next_position} do fronty")
+                    queue.append((next_position, path + [current_position]))
 
-        return False
+        self.cesta = []  # Pokud cesta není nalezena
+        print("Cesta nebyla nalezena.")
+        return self.cesta
+
+    def getSousedniPozice(self, pozice):
+        x, y = pozice
+        sousedni = []
+        # Směry: nahoru, dolů, vlevo, vpravo
+        if y > 0: sousedni.append((x, y - 1))  # nahoru
+        if y < self.bludiste.getVyska() - 1: sousedni.append((x, y + 1))  # dolů
+        if x > 0: sousedni.append((x - 1, y))  # vlevo
+        if x < self.bludiste.getSirka() - 1: sousedni.append((x + 1, y))  # vpravo
+        return sousedni
+
+    def pohniSe(self):
+        if self.cesta:  # Pokud máme cestu
+            nova_pozice = self.cesta.pop(0)  # Získejte další pozici z cesty
+            self.pozice = nova_pozice  # Aktualizujte pozici robota
+            print(f"Robot se pohybuje na pozici: {self.pozice}")
+
+            if self.pozice == self.bludiste.cil:  # Pokud jsme dosáhli cíle
+                print("Cíl dosažen!")
+                return False  # Zastavit pohyb, protože cíl byl dosažen
+            return True  # Pokračovat v pohybu
+        else:
+            print("Cesta nebyla nalezena.")
+            return False  # Pokud není cesta, pohyb se nezahájí
+
+
+
+
+

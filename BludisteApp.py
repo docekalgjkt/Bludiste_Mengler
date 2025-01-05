@@ -1,8 +1,9 @@
-from tkinter import Tk, Canvas, filedialog, messagebox
+from tkinter import Tk, Canvas, filedialog, messagebox, Button
 from MazeDAO import MazeDAO
 from BludisteView import BludisteView
 from Robot import Robot
 from RobotView import RobotView
+
 
 class BludisteApp:
     def __init__(self):
@@ -18,6 +19,10 @@ class BludisteApp:
         self.vyber_a_nacti_bludiste()  # Načteme bludiště při spuštění
 
         self.canvas.bind("<Configure>", self.update_view)
+
+        # Přidání tlačítka pro pohyb robota
+        self.button = Button(self.root, text="Start Robot", command=self.pohniRobotem)
+        self.button.pack()
 
     def vyber_a_nacti_bludiste(self):
         try:
@@ -70,7 +75,10 @@ class BludisteApp:
         """
         Posune robota o jeden krok a překreslí okno.
         """
-        if self.robot.pohniSe():
+        if not self.robot.cesta:  # Pokud robot nemá žádnou cestu, najdi ji
+            self.robot.najdiCestu()
+
+        if self.robot.pohniSe():  # Pokud robot může udělat krok
             self.update_view()
         else:
             messagebox.showinfo("Informace", "Robot dosáhl cíle nebo není možné pokračovat.")
@@ -81,9 +89,14 @@ class BludisteApp:
             self.root.mainloop()
 
     def automatickyPohyb(self):
+        """
+        Automatický pohyb robota, volá se každých 100 ms.
+        """
         if self.robot and self.robot.pohniSe():
+            print(f"Robot se automaticky pohybuje na pozici: {self.robot.pozice}")  # Ladicí výpis
             self.update_view()
-            self.root.after(100, self.automatickyPohyb)
+            self.root.after(100, self.automatickyPohyb)  # Pokračuj v pohybu každých 100 ms
+
 
 if __name__ == "__main__":
     app = BludisteApp()

@@ -1,4 +1,4 @@
-from tkinter import Tk, Canvas, filedialog, messagebox, Button
+from tkinter import Tk, Canvas, filedialog, messagebox
 from MazeDAO import MazeDAO
 from BludisteView import BludisteView
 from Robot import Robot
@@ -20,9 +20,8 @@ class BludisteApp:
 
         self.canvas.bind("<Configure>", self.update_view)
 
-        # Přidání tlačítka pro pohyb robota
-        self.button = Button(self.root, text="Start Robot", command=self.pohniRobotem)
-        self.button.pack()
+        # Automatický pohyb robota po načtení bludiště
+        self.automatickyPohyb()
 
     def vyber_a_nacti_bludiste(self):
         try:
@@ -71,30 +70,29 @@ class BludisteApp:
         if self.robot and self.robotView:
             self.robotView.vykresli(self.canvas, self.bludisteView.rozmerPolicka)
 
-    def pohniRobotem(self):
-        """
-        Posune robota o jeden krok a překreslí okno.
-        """
-        if not self.robot.cesta:  # Pokud robot nemá žádnou cestu, najdi ji
-            self.robot.najdiCestu()
-
-        if self.robot.pohniSe():  # Pokud robot může udělat krok
-            self.update_view()
-        else:
-            messagebox.showinfo("Informace", "Robot dosáhl cíle nebo není možné pokračovat.")
-
     def spustit(self):
         if self.bludiste:
-            self.root.after(100, self.automatickyPohyb)  # Automatický pohyb robota (volitelné)
             self.root.mainloop()
 
     def automatickyPohyb(self):
         """
         Automatický pohyb robota, volá se každých 100 ms.
         """
-        if self.robot and self.robot.pohniSe():
-            print(f"Robot se automaticky pohybuje na pozici: {self.robot.pozice}")  # Ladicí výpis
-            self.update_view()
+        if self.robot:
+            if not self.robot.cesta:  # Pokud robot nemá cestu, najdi ji
+                self.robot.najdiCestu()
+                if not self.robot.cesta:  # Pokud cesta není nalezena, zastavíme pohyb
+                    messagebox.showinfo("Chyba", "Cesta nebyla nalezena.")
+                    return
+
+            if self.robot.pohniSe():  # Pokud robot může udělat krok
+                print(f"Robot se automaticky pohybuje na pozici: {self.robot.pozice}")  # Ladicí výpis
+                self.update_view()  # Aktualizujeme vykreslení, aby robot byl vidět na nové pozici
+            else:
+                # Pokud robot dosáhl cíle, vykreslíme ho na cílovém místě
+                print("Robot dosáhl cíle!")
+                self.update_view()  # Překreslení na cílovém políčku
+                return  # Pokud robot nemůže pokračovat, zastavíme pohyb
             self.root.after(100, self.automatickyPohyb)  # Pokračuj v pohybu každých 100 ms
 
 

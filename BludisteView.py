@@ -2,7 +2,7 @@ from tkinter import Canvas
 from Bludiste import Bludiste
 
 class BludisteView:
-    def __init__(self, bludiste: Bludiste, rozmerPolicka: int = 20):
+    def __init__(self, bludiste: Bludiste, rozmerPolicka: int = 35):
         self.bludiste = bludiste
         self.rozmerPolicka = rozmerPolicka
         self.canvas = None
